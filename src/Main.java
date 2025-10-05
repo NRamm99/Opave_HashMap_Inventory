@@ -8,13 +8,54 @@ public class Main {
 
     public static void main(String[] args) {
         addItems();
+        promptMenu();
+    }
+
+    private static void promptMenu() {
+        while (true) {
+            printToConsole("""
+                    ---------- MENU ----------
+                    1... Add item(s)
+                    2... Remove item(s)
+                    3... Show inventory
+                    
+                    0... Quit
+                    """);
+            int userInput = input.nextInt();
+            input.nextLine();
+            switch (userInput) {
+                case 1:
+                    addItems();
+                    break;
+                case 2:
+                    removeItems();
+                    break;
+                case 3:
+                    printInventory();
+                    waitForUser();
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
+    private static void removeItems() {
         printInventory();
+        printToConsole("\nWhich item do you want to remove?", false);
+        System.out.print("Choice: ");
+        String removeItem = input.nextLine();
+        inventory.remove(removeItem.toLowerCase());
     }
 
     private static void printInventory() {
         printToConsole("---------- INVENTORY ----------");
         for (Map.Entry<String, Integer> entry : inventory.entrySet()) {
-            printToConsole(" - " + entry.getValue() + " x " + entry.getKey(), false);
+            String item = entry.getKey();
+            if (!item.isEmpty()) {
+                item = item.substring(0, 1).toUpperCase() + item.substring(1);
+            }
+            printToConsole(" - " + entry.getValue() + " x " + item, false);
         }
     }
 
@@ -29,7 +70,7 @@ public class Main {
         for (int n = 0; n < amountItems; n++) {
             printToConsole("Enter the name of item #" + (n + 1));
             System.out.print("Choice: ");
-            itemName = input.nextLine();
+            itemName = input.nextLine().toLowerCase();
             printToConsole("Enter the amount of " + itemName + "s you want to add to your inventory.");
             System.out.print("Choice: ");
             itemQuantity = input.nextInt();
